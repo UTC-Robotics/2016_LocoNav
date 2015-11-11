@@ -42,33 +42,33 @@ if __name__ == "__main__":
 	atexit.register( releaseAllMotors ) 
 	
 	while( True ): 
-		LR_mtr.run( FORWARD ) 
-		RR_mtr.run( FORWARD ) 
+		LR_mtr.run( FORWARD ) 		# Set motor direction 
+		RR_mtr.run( FORWARD ) 		# ...for all 
 		LF_mtr.run( FORWARD ) 
 		RF_mtr.run( FORWARD ) 
 
 		for i in range(255): 
-			LR_mtr.setSpeed( i ) 
-			RR_mtr.setSpeed( i ) 
+			LR_mtr.setSpeed( i ) 	# Ramp speed up from off
+			RR_mtr.setSpeed( i ) 	# ...to highest possible 
 			LF_mtr.setSpeed( i ) 
 			RF_mtr.setSpeed( i ) 
 			time.sleep( 0.1 ) 
 
 		for i in reversed(range(255)): 
-			LR_mtr.setSpeed( i ) 
-			RR_mtr.setSpeed( i ) 
+			LR_mtr.setSpeed( i ) 	# Ramp speed back down 
+			RR_mtr.setSpeed( i ) 	# ...to off 
 			LF_mtr.setSpeed( i ) 
 			RF_mtr.setSpeed( i ) 
 			time.sleep( 0.1 ) 
 
-		LR_mtr.run( BACKWARD ) 
-		RR_mtr.run( BACKWARD ) 
+		LR_mtr.run( BACKWARD ) 		# Now change direction 
+		RR_mtr.run( BACKWARD ) 		# ...for all 
 		LF_mtr.run( BACKWARD ) 
 		RF_mtr.run( BACKWARD ) 
 
 		for i in range(255): 
-			LR_mtr.setSpeed( i ) 
-			RR_mtr.setSpeed( i ) 
+			LR_mtr.setSpeed( i ) 	# And repeat the cycle 
+			RR_mtr.setSpeed( i ) 	# ...through all speeds 
 			LF_mtr.setSpeed( i ) 
 			RF_mtr.setSpeed( i ) 
 			time.sleep( 0.1 ) 
