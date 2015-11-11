@@ -1,0 +1,96 @@
+// # # # # # # # # # # # # # # # # # # # # # # # 
+// PSEUDO FUNCTIONS FOR THE NAVIGATION SUBSYSTEM 
+// # # # # # # # # # # # # # # # # # # # # # # # 
+
+// Func to check for off-axis orientation
+func lookingAhead()
+{
+	int tolerance = ?;
+	
+	leftDist = readSensor( front_left );
+	rightDist = readSensor( front_right );
+	
+	if( difference(leftDist-rightDist) <= tolerance )
+	{
+		return 1;	// 1 for "True"
+	}
+	else
+	{
+		return 0;	// 0 for "False"
+	}
+}
+
+// Turn all motors on same amount:
+func motorsOnTo( value )
+{
+	motorDF on to value;		// DF = driver-side front
+	motorPF on to value;		// PF = passenger-side front
+	motorDR on to value;		// DR = driver side rear
+	motorPR on to value;		// PR = passenger side rear
+}
+
+// To drive forward set distance: 
+func goForward( distance )
+{
+	startPosition = readSensors();
+	distTraveled = 0;
+	motorsOnTo( speed );
+	while( distTraveled < distance )
+	{
+		currentPosition = readSensors();
+		distTraveled = ( difference(currentPosition,startPosition) );
+	}
+	motorsOnTo( 0 );
+}
+
+// To drive forward until condition met, 
+--Example--
+{
+	while( condition != True )
+	{
+		goForward( small_distance );
+	}
+}
+----OR----
+{
+	while( condition != True )
+	{
+		motorsOnTo( value );
+		sleep( 1ms );
+		motorsOnTo( 0 );
+		sleep( 1ms );
+	}
+}
+
+
+// # # # # # # # # # # # # # # # # # # # # # # # # # 
+// General Planned Process Flow for Approaching Wall 
+// # # # # # # # # # # # # # # # # # # # # # # # # # 
+func approachWall()
+{
+	while( lookingAhead() )		// lookingAhead() will return True unless 
+	{ 				//   the bot gets too far off trajectory
+		distToWall = readSensor( front_center );
+		if( distToWall <= small_distance )
+		{
+			break;
+		}
+		else
+		{
+			motorsOnTo( val );
+			sleep( 1ms );
+			motorsOnTo( 0 );
+			sleep( 1ms );
+		}
+	}
+	
+	if( !(lookingAhead()) )		// i.e. if not looking forward
+	{				// this works whether the while() loop exited
+		correctTrajectory();	// due to being off trajectory or at the wall
+		
+		if( distToWall >= small_distance )  // i.e. if still not at wall 
+		{
+			approachWall();	// ReCurSiVe FunCTiOnS WHHAAATTTT 
+		}
+	}
+}
