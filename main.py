@@ -5,21 +5,6 @@ import atexit
 import RPi.GPIO as GPIO
 #GPIO.setmode(GPIO.BOARD)
 
-TRIG = 23
-ECHO = 24
-TAKES = 50
-
-def setup():
-        atexit.register(GPIO.cleanup)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(TRIG, GPIO.OUT)
-        GPIO.setup(ECHO, GPIO.IN)
-        GPIO.output(TRIG, False)
-        print("Waiting for sensor to settle...")
-        time.sleep(2)
-        pulse_start    = 0
-        pulse_end      = 0
-        pulse_duration = 0
 
 def measureDist():
         GPIO.output(TRIG, True)

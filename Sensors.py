@@ -1,47 +1,55 @@
 #!/usr/bin/python
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# 
+# --> SENSORS.PY <-- 
+# 
+#  This library contains classes for each type of sensor used on the 2015 
+#   UTC IEEE Southeastcon Competition Robot: 
+#    -- the HCSR04 Ultrasonic Ranging module 
+#    -- generic photoresistors for detecting start condition 
+# 
+#  Author:  Ben Evans 
+# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
 import time
-import atexit
 import RPi.GPIO as GPIO
-#GPIO.setmode(GPIO.BOARD)
 
-TRIG = 23
-ECHO = 24
-TAKES = 50
+# 
+# __HCSR04 Class__ 
+# When creating instances, pass 2 args: 
+# 	1) Pi GPIO no. for TRIG pin 
+# 	2) Pi GPIO no. for ECHO pin 
+# NOTE: Give 1-2 secs after any instance initialization for pins to settle !! 
+# 
+class HCSR04: 
 
-def setup():
-        atexit.register(GPIO.cleanup)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(TRIG, GPIO.OUT)
-        GPIO.setup(ECHO, GPIO.IN)
-        GPIO.output(TRIG, False)
-        print("Waiting for sensor to settle...")
-        time.sleep(2)
-        pulse_start    = 0
-        pulse_end      = 0
-        pulse_duration = 0
+	num_meas_4avg = 30 					# Number of measurements to average 
+	trig_len = 0.00001 					# Pulse length to trigger HCSR04 (sec) 
 
-def measureDist():
-        GPIO.output(TRIG, True)
-        time.sleep(0.00001)
-        GPIO.output(TRIG, False)
-        while GPIO.input(ECHO) == 0:
-                pulse_start = time.time()
-        while GPIO.input(ECHO) == 1:
-                pulse_end = time.time()
-        pulse_duration = pulse_end - pulse_start
-        distance = pulse_duration * 17150
-        distance = round(distance, 2)
-        return distance
-
-
-if __name__ == '__main__':
-        setup()
-        distance = 0
-        while True:
-                distSum = 0
-                for i in range(0,TAKES):
-                        distSum += measureDist()
-                distance = distSum/TAKES
-                print("Distance: " + str(distance) + " cm")
-                time.sleep(0.15)
+	def __init__(self,pin1,pin2):  
+		self.trig_pin = pin1 
+		self.echo_pin = pin2 
+		GPIO.setup(self.trig_pin, GPIO.OUT) 
+		GPIO.output(self.trig_pin, False) 
+		self.pulse_start = 0 
+		self.pulse_end = 0 
+		self.pulse_dur = 0 
+		self.new_dist = 0 
+		
+	def MeasureOnce(self): 
+		GPIO.output(self.trig_pin, True) 
+		time.sleep(self.trig_len) 
+		GPIO.output(self.trig_pin, False) 
+		while(GPIO.input(self.echo_pin)==0): 
+			self.pulse_start = time.time() 
+		while(GPIO.input(self.echo_pin)==1); 
+			self.pulse_end = time.time() 
+		self.pulse_dur = self.pulse_end - self.pulse_start 
+		self.new_dist = self.pulse_dur * 17150 
+		self.new_dist = round(self.new_dist, 2) 
+		return(self.new_dist) 
+		
+		
+		
