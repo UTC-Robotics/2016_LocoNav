@@ -4,53 +4,38 @@
 # 
 # --> SENSORS.PY <-- 
 # 
-#  This library contains classes for each type of sensor used on the 2015 
-#   UTC IEEE Southeastcon Competition Robot: 
-#    -- the HCSR04 Ultrasonic Ranging module 
-#    -- generic photoresistors for detecting start condition 
+#  - Upon import, this library will initialize objects for each sensor 
+# 		used on the robot and define functions for utilizing them 
 # 
+#  *NOTE* 
+#     Import this file at start of 'main.py' 
+#  
 #  Author:  Ben Evans 
 # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 import time
 import RPi.GPIO as GPIO
+import HCSR04 
 
-# 
-# __HCSR04 Class__ 
-# When creating instances, pass 2 args: 
-# 	1) Pi GPIO no. for TRIG pin 
-# 	2) Pi GPIO no. for ECHO pin 
-# NOTE: Give 1-2 secs after any instance initialization for pins to settle !! 
-# 
-class HCSR04: 
+# INITIALIZE SENSORS # 
+rngf_LT = HCSR04.HCSR04(7,13)  	# -> rngf_FL 
+rngf_LM = HCSR04.HCSR04(19,21) 	# -> rngf_FM 
+rngf_LB = HCSR04.HCSR04(23,22) 	# -> rngf_FR 
+rngf_RT = HCSR04.HCSR04(8,12)  	# -> rngf_ML 
+rngf_RM = HCSR04.HCSR04(16,18) 	# -> rngf_MR 
+rngf_RB = HCSR04.HCSR04(24,26) 	# -> rngf_RM
+time.sleep(1.0) 		# Time for all sensors pins to settle 
 
-	num_meas_4avg = 30 		# Number of measurements to average 
-	trig_len = 0.00001 		# Pulse length to trigger HCSR04 (sec) 
-
-	def __init__(self,pin1,pin2):  
-		self.trig_pin = pin1 
-		self.echo_pin = pin2 
-		GPIO.setup(self.echo_pin, GPIO.IN) 
-		GPIO.setup(self.trig_pin, GPIO.OUT) 
-		GPIO.output(self.trig_pin, False) 
-		self.pulse_start = 0 
-		self.pulse_end = 0 
-		self.pulse_dur = 0 
-		self.new_dist = 0 
-		
-	def MeasureOnce(self): 
-		GPIO.output(self.trig_pin, True) 
-		time.sleep(self.trig_len) 
-		GPIO.output(self.trig_pin, False) 
-		while(GPIO.input(self.echo_pin)==0): 
-			self.pulse_start = time.time() 
-		while(GPIO.input(self.echo_pin)==1): 
-			self.pulse_end = time.time() 
-		self.pulse_dur = self.pulse_end - self.pulse_start 
-		self.new_dist = self.pulse_dur * 17150 
-		self.new_dist = round(self.new_dist, 2) 
-		return(self.new_dist) 
-		
-		
-		
+def OffAxis(): 
+	FL_dist = 0 
+	FR_dist = 0 
+	FM_dist = 0 
+	for i in range(0,5): 
+		FL_dist += rngf_FL.MeasureOnce() 
+		FR_dist += rngf_FR.MeasureOnce() 
+		FM_dist += rngf_FM.MeasureOnce() 
+		time.sleep() 	# settle time for all echo pins 
+	FL_dist /= 5 	# (cm) 
+	FR_dist /= 5 	# (cm) 
+	FM_dist /= 5 	# (cm) 
