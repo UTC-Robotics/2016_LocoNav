@@ -6,25 +6,26 @@
 # 
 #  This class is to be used for initializing each individual HCSR04 ultra-
 #    sonic ranging module used on the 2016 IEEE Competition robot. 
-#  When creating instances, 2 arguments must be passed: 
-# 	1) Pi GPIO pin no. for HCSR04 Trig pin 
-# 	2) Pi GPIO pin no. for HCSR04 Echo pin 
+#  When creating objects, 2 arguments must be passed: 
+# 	1) Pi GPIO pin no. for HCSR04 Trig 
+# 	2) Pi GPIO pin no. for HCSR04 Echo 
 # 
 #  *NOTE* 
 #     Instances are to be created in the 'Sensors.py' file. 
-#     Give 1-2 secs after any instance initialization for pins to settle! 
 # 
 #  Author:  Ben Evans 
 # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-import time
+from time import sleep 
 import RPi.GPIO as GPIO
 
 class HCSR04: 
 
-	num_meas_4avg = 30 		# Number of measurements to average 
-	trig_len = 0.00001 		# Pulse length to trigger HCSR04 (sec) 
+	num_meas_highAcc = 30 	# Average this number of measurements for HIGH accuracy 
+	num_meas_gudEngh = 5 	# Average this number for GOOD ENOUGH accuracy 
+	trig_len = 0.00001 		# Pulse length to trigger HCSR04 (10 ns as per manual) 
+	setl_len = 0.010 		# Time length to settle after a measurement (1 ms, arbitrary) 
 
 	def __init__(self,pin1,pin2):  
 		self.trig_pin = pin1 
@@ -36,6 +37,7 @@ class HCSR04:
 		self.pulse_end = 0 
 		self.pulse_dur = 0 
 		self.new_dist = 0 
+		sleep(self.setl_len) 	# Give time to settle after init 
 		
 	def MeasureOnce(self): 
 		GPIO.output(self.trig_pin, True) 
@@ -48,6 +50,7 @@ class HCSR04:
 		self.pulse_dur = self.pulse_end - self.pulse_start 
 		self.new_dist = self.pulse_dur * 17150 
 		self.new_dist = round(self.new_dist, 2) 
+		#sleep(self.setl_len) 
 		return(self.new_dist) 
 		
 		
