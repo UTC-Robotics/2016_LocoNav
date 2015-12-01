@@ -1,8 +1,11 @@
-This directory is intended to be used as a sort of limbo.  
+# Quarantine?  What's this, you ask?  
 
-Files placed here can be considered as trash being kept around 
-   just in case you accidentally threw out your retainer.  
+This directory is a sort of limbo for files you're 99% sure 
+   should be trashed.  
+
+Consider any files here as trash being kept around just in 
+   case they accidentally contain your retainer in a napkin.  
 
 
-- Ben 
+-- Ben 
 
