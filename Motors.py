@@ -43,7 +43,7 @@ def goFrwrd(speed): 			### MUST be passed a speed value
 	LR_mtr.run( FORWARD ) 		
 	RR_mtr.run( FORWARD ) 		# Set motor directions 
 	LF_mtr.run( FORWARD ) 		# ..if not set already 
-	RF_mtr.run( FORWARD ) 		 
+	RF_mtr.run( FORWARD ) 		
 	LR_mtr.setSpeed( speed ) 	
 	RR_mtr.setSpeed( speed ) 	# Set motor speeds to specified value 
 	LF_mtr.setSpeed( speed ) 	# Set all motor speeds to specified value 
