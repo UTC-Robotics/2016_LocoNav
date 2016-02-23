@@ -14,6 +14,8 @@ def onExitHousekeeping():
 	
 atexit.register(onExitHousekeeping) 
 
+TestSpeed = 150 
+TestSleep = 1.65 
 
 if __name__ == '__main__': 
 
